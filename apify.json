@@ -1,0 +1,7 @@
+{
+	"name": "realist-export",
+	"template": "basic",
+	"version": "0.1",
+	"buildTag": "latest",
+	"env": null
+}

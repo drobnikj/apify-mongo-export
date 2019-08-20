@@ -68,7 +68,7 @@ Apify.main(async () => {
 
     await Promise.map(batchesToExport, async (batch) => {
         const { skip, limit } = batch;
-        const items = await selectedCollection.find(query, { skip, limit, fields }).toArray();
+        const items = await selectedCollection.find(query, { skip, limit, fields }).addCursorFlag('noCursorTimeout', true).toArray();
         console.log(`Saving ${skip} - ${skip + limit} items to dataset!`);
         await Apify.pushData(items);
     }, { concurrency });

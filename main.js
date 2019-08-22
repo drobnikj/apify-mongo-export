@@ -51,7 +51,7 @@ Apify.main(async () => {
     // If it fails creates index on query!!!
     let itemsCount;
     try {
-        itemsCount = await selectedCollection.count(query, { maxTimeMS: 60000 });
+        itemsCount = await selectedCollection.count(query, { maxTimeMS: 300000 });
     } catch (err) {
         await tearDown(mongoClient, tunnel);
         throw new Error('Can not get count for exporting items, you need to create index for your query!');

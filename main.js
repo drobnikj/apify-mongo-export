@@ -10,7 +10,7 @@ const tearDown = async (mongoClient, tunnel) => {
 };
 
 Apify.main(async () => {
-    let { dbName, query, fields = {}, collectionName, mongoUrl, concurrency = 10, useTunnel } = await Apify.getValue('INPUT');
+    let { dbName, query, fields = {}, collectionName, mongoUrl, concurrency = 10, useTunnel, estimatedItemsCount } = await Apify.getValue('INPUT');
 
     mongoUrl = process.env.MONGO_URL || mongoUrl;
 
@@ -50,12 +50,17 @@ Apify.main(async () => {
 
     // If it fails creates index on query!!!
     let itemsCount;
-    try {
-        itemsCount = await selectedCollection.count(query, { maxTimeMS: 1200000 });
-    } catch (err) {
-        await tearDown(mongoClient, tunnel);
-        throw new Error('Can not get count for exporting items, you need to create index for your query!');
+    if (estimatedItemsCount) {
+        itemsCount = estimatedItemsCount;
+    } else {
+        try {
+            itemsCount = await selectedCollection.count(query, { maxTimeMS: 1200000 });
+        } catch (err) {
+            await tearDown(mongoClient, tunnel);
+            throw new Error('Can not get count for exporting items, you need to create index for your query!');
+        }
     }
+
 
     console.log(`Exporting ${itemsCount} to dataset!`);
 
